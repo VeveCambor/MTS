@@ -25,6 +25,10 @@ export function ColorModeProvider({ children }: { children: React.ReactNode }) {
   const [mode, setMode] = useState<ColorMode>("light");
 
   useEffect(() => {
+    document.documentElement.dataset.theme = mode;
+  }, [mode]);
+
+  useEffect(() => {
     // Načtení preference z localStorage po mountu brání hydration mismatch
     // (server nezná uložený motiv). Jde o synchronizaci externího stavu do Reactu.
     const stored = window.localStorage.getItem(STORAGE_KEY) as ColorMode | null;

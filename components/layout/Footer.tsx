@@ -6,16 +6,14 @@ export function Footer() {
     <Box
       component="footer"
       sx={{
-        py: 2,
-        px: 3,
-        mt: "auto",
-        borderTop: 1,
-        borderColor: "divider",
+        py: 3,
+        mt: 4,
         textAlign: "center",
+        bgcolor: "transparent",
       }}
     >
       <Typography variant="caption" color="text.secondary">
-        © {new Date().getFullYear()} MyTrainingSpace
+        © {new Date().getFullYear()} MTS s.r.o. · MyTrainingSpace
       </Typography>
     </Box>
   );

@@ -6,8 +6,8 @@ const nextConfig: NextConfig = {
   // react-big-calendar je publikován jako CJS, transpile pro App Router
   transpilePackages: ["react-big-calendar"],
   experimental: {
-    // Optimalizace importů ikon a MUI komponent (menší bundle)
-    optimizePackageImports: ["@mui/material", "@mui/icons-material", "react-feather"],
+    // @mui/material vynecháno — optimizePackageImports rozbíjí interní re-exporty MUI v9 + Turbopack
+    optimizePackageImports: ["@mui/icons-material", "react-feather"],
   },
 };
 

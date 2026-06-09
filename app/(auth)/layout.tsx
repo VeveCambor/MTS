@@ -1,6 +1,9 @@
+"use client";
+
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
+import { FuturisticBackground } from "@/components/ui/FuturisticBackground";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -8,19 +11,47 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       sx={{
         minHeight: "100vh",
         display: "flex",
+        flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        bgcolor: "background.default",
-        py: 6,
+        py: { xs: 4, md: 8 },
+        px: 2,
+        position: "relative",
+        overflow: "hidden",
       }}
     >
-      <Container maxWidth="xs">
-        <Box sx={{ textAlign: "center", mb: 4 }}>
-          <Typography variant="h1" sx={{ fontSize: "1.75rem", color: "primary.main" }}>
-            MyTrainingSpace
+      <FuturisticBackground />
+
+      <Container maxWidth="sm" sx={{ position: "relative", zIndex: 1 }}>
+        <Box sx={{ textAlign: "center", mb: { xs: 3, md: 5 } }}>
+          <Typography
+            variant="overline"
+            sx={{
+              display: "block",
+              letterSpacing: "0.18em",
+              fontWeight: 600,
+              fontSize: "0.7rem",
+              color: "text.secondary",
+              mb: 1,
+            }}
+          >
+            MY TRAINING SPACE
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Plánování tréninků
+          <Typography
+            variant="h1"
+            color="text.primary"
+            sx={{
+              fontSize: { xs: "2.5rem", sm: "3.5rem", md: "4rem" },
+              fontWeight: 800,
+              lineHeight: 1.1,
+              mb: 1,
+              letterSpacing: "-0.03em",
+            }}
+          >
+            My Training Space
+          </Typography>
+          <Typography variant="body1" color="text.secondary" sx={{ letterSpacing: "0.02em" }}>
+            Plánování tréninků mezi trenérem a cvičenci
           </Typography>
         </Box>
         {children}

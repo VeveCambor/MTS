@@ -6,6 +6,7 @@ import { queryKeys } from "@/lib/query-keys";
 import {
   createTraining,
   deleteTraining,
+  getTrainingDistanceKm,
   getTrainings,
   updateTraining,
 } from "@/lib/services/activities";
@@ -41,4 +42,16 @@ export function useActivityTrainings(groupId: string, enabled = true) {
   });
 
   return { ...list, create, update, remove };
+}
+
+/** Vrací funkci pro imperativní (cachované) načtení orientačních km jednotky. */
+export function useUnitKmFetcher() {
+  const supabase = useSupabaseClient();
+  const queryClient = useQueryClient();
+  return (trainingId: string) =>
+    queryClient.fetchQuery({
+      queryKey: ["unit-km", trainingId],
+      queryFn: () => getTrainingDistanceKm(supabase, trainingId),
+      staleTime: 5 * 60 * 1000,
+    });
 }

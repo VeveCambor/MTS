@@ -21,7 +21,7 @@ export function LoginForm() {
   });
 
   return (
-    <SpaceCard title="Přihlášení">
+    <SpaceCard title="Přihlášení" glass sx={{ maxWidth: 600, mx: "auto" }}>
       <form onSubmit={handleSubmit((v) => signIn(v.email, v.password))} noValidate>
         <Stack spacing={2.5}>
           {error && <Alert severity="error">{error}</Alert>}

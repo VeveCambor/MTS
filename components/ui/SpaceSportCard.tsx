@@ -7,6 +7,7 @@ import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { getSportStyle } from "@/lib/constants/sports";
+import { motion } from "@/styles/tokens";
 
 type SpaceSportCardProps = {
   name: string;
@@ -14,53 +15,108 @@ type SpaceSportCardProps = {
   href: string;
 };
 
-export function SpaceSportCard({ name, description, href }: SpaceSportCardProps) {
-  const { color, Icon } = getSportStyle(name);
+const SIZE = 200;
+
+export function SpaceSportCard({ name, href }: SpaceSportCardProps) {
+  const { color, Icon, label } = getSportStyle(name);
 
   return (
-    <Card
+    <Box
       sx={{
-        width: 200,
-        height: 200,
+        position: "relative",
+        width: SIZE,
+        height: SIZE,
         mx: "auto",
-        transition: "transform 0.2s ease, box-shadow 0.2s ease",
-        "&:hover": {
-          transform: "translateY(-6px)",
-          boxShadow: `0 12px 28px ${color}40`,
-          borderColor: color,
-        },
+        "&:hover .sport-orbit": { opacity: 1 },
+        "&:hover .sport-orbit-inner": { opacity: 0.7 },
       }}
     >
-      <CardActionArea
-        component={Link}
-        href={href}
-        sx={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}
+      {/* Orbitální kroužky */}
+      <Box
+        className="sport-orbit"
+        sx={{
+          position: "absolute",
+          inset: -8,
+          borderRadius: "50%",
+          border: `1px dashed ${color}44`,
+          opacity: 0,
+          animation: "orbit-spin 14s linear infinite",
+          transition: `opacity ${motion.normal}`,
+          pointerEvents: "none",
+        }}
+      />
+      <Box
+        className="sport-orbit-inner"
+        sx={{
+          position: "absolute",
+          inset: -3,
+          borderRadius: "50%",
+          border: `1px solid ${color}33`,
+          opacity: 0,
+          animation: "orbit-spin 8s linear infinite reverse",
+          transition: `opacity ${motion.normal}`,
+          pointerEvents: "none",
+        }}
+      />
+
+      <Card
+        sx={{
+          width: SIZE,
+          height: SIZE,
+          borderRadius: "50%",
+          overflow: "hidden",
+          backdropFilter: "blur(8px)",
+          transition: `transform ${motion.normal}, box-shadow ${motion.normal}`,
+          "&:hover": {
+            transform: "translateY(-4px) scale(1.02)",
+            boxShadow: `0 8px 32px ${color}30, 0 0 0 1px ${color}22`,
+            borderColor: color,
+          },
+        }}
       >
-        <Stack spacing={1.5} sx={{ alignItems: "center", textAlign: "center", px: 2 }}>
-          <Box
-            sx={{
-              width: 60,
-              height: 60,
-              borderRadius: "50%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: `${color}33`,
-              color,
-            }}
-          >
-            <Icon size={28} />
-          </Box>
-          <Typography variant="h3" sx={{ fontSize: "1.1rem" }}>
-            {name}
-          </Typography>
-          {description && (
-            <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.3 }}>
-              {description}
+        <CardActionArea
+          component={Link}
+          href={href}
+          sx={{
+            width: SIZE,
+            height: SIZE,
+            borderRadius: "50%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Stack spacing={1.25} sx={{ alignItems: "center", textAlign: "center", px: 2 }}>
+            <Box
+              sx={{
+                width: 60,
+                height: 60,
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: `${color}22`,
+                color,
+                boxShadow: `0 0 20px ${color}18`,
+              }}
+            >
+              <Icon size={28} />
+            </Box>
+            <Typography
+              variant="h3"
+              sx={{
+                fontSize: "0.95rem",
+                fontWeight: 700,
+                lineHeight: 1.2,
+                maxWidth: 140,
+                letterSpacing: "-0.01em",
+              }}
+            >
+              {label}
             </Typography>
-          )}
-        </Stack>
-      </CardActionArea>
-    </Card>
+          </Stack>
+        </CardActionArea>
+      </Card>
+    </Box>
   );
 }

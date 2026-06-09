@@ -21,7 +21,7 @@ export function RegisterForm() {
   });
 
   return (
-    <SpaceCard title="Registrace">
+    <SpaceCard title="Registrace" glass sx={{ maxWidth: 600, mx: "auto" }}>
       <form
         onSubmit={handleSubmit((v) =>
           signUp({

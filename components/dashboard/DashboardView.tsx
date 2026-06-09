@@ -4,16 +4,25 @@ import Link from "next/link";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import Skeleton from "@mui/material/Skeleton";
+import Alert from "@mui/material/Alert";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SpaceCard } from "@/components/ui/SpaceCard";
 import { useProfile } from "@/hooks/useProfile";
 import { getNavSections } from "@/lib/constants/navigation";
 
 export function DashboardView() {
-  const { profile, role, isTrainer, isLoading } = useProfile();
+  const { profile, role, isTrainer, isLoading, isError } = useProfile();
 
   if (isLoading) {
     return <Skeleton variant="rounded" height={200} />;
+  }
+
+  if (isError) {
+    return (
+      <Alert severity="error">
+        Profil se nepodařilo načíst. Zkus obnovit stránku nebo se znovu přihlásit.
+      </Alert>
+    );
   }
 
   const name = profile?.first_name || profile?.nick || "";

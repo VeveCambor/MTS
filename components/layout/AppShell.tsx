@@ -3,71 +3,54 @@
 import { useState } from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
-import Toolbar from "@mui/material/Toolbar";
 import { Navbar } from "./Navbar";
-import { Sidebar } from "./Sidebar";
+import { Sidebar, BottomNav } from "./Sidebar";
 import { Footer } from "./Footer";
-import { useProfile } from "@/hooks/useProfile";
-import { getNavSections } from "@/lib/constants/navigation";
-
-const DRAWER_WIDTH = 260;
+import { FuturisticBackground } from "@/components/ui/FuturisticBackground";
+import { contentPaddingLeft, layout, radius } from "@/styles/tokens";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { role } = useProfile();
-  const sections = getNavSections(role);
+  const plDesktop = contentPaddingLeft();
 
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh" }}>
+    <Box sx={{ minHeight: "100vh", position: "relative" }}>
+      <FuturisticBackground />
       <Navbar onMenuClick={() => setMobileOpen((v) => !v)} />
 
-      <Box
-        component="nav"
-        sx={{ width: { md: DRAWER_WIDTH }, flexShrink: { md: 0 } }}
-        aria-label="Hlavní navigace"
-      >
-        <Drawer
-          variant="temporary"
-          open={mobileOpen}
-          onClose={() => setMobileOpen(false)}
-          ModalProps={{ keepMounted: true }}
-          sx={{
-            display: { xs: "block", md: "none" },
-            "& .MuiDrawer-paper": { boxSizing: "border-box", width: DRAWER_WIDTH },
-          }}
-        >
-          <Sidebar sections={sections} onNavigate={() => setMobileOpen(false)} />
-        </Drawer>
+      <Sidebar variant="rail" />
+      <BottomNav />
 
-        <Drawer
-          variant="permanent"
-          open
-          sx={{
-            display: { xs: "none", md: "block" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
-              width: DRAWER_WIDTH,
-              borderRight: 1,
-              borderColor: "divider",
-            },
-          }}
-        >
-          <Sidebar sections={sections} />
-        </Drawer>
-      </Box>
+      <Drawer
+        variant="temporary"
+        open={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        ModalProps={{ keepMounted: true }}
+        sx={{ display: { md: "none" } }}
+        slotProps={{
+          paper: { sx: { width: 280, borderRadius: `0 ${radius.lg} ${radius.lg} 0` } },
+        }}
+      >
+        <Sidebar variant="drawer" onNavigate={() => setMobileOpen(false)} />
+      </Drawer>
 
       <Box
         component="main"
         sx={{
-          flexGrow: 1,
+          position: "relative",
+          zIndex: 1,
+          pt: `${layout.topOffset}px`,
+          pb: { xs: `${layout.bottomBarHeight + 24}px`, md: 5 },
+          pl: { xs: layout.pagePaddingX.xs, md: `${plDesktop}px` },
+          pr: layout.pagePaddingX,
+          minHeight: "100vh",
           display: "flex",
           flexDirection: "column",
-          width: { md: `calc(100% - ${DRAWER_WIDTH}px)` },
-          minHeight: "100vh",
         }}
       >
-        <Toolbar />
-        <Box sx={{ flexGrow: 1, p: { xs: 2, md: 3 } }}>{children}</Box>
+        <Box sx={{ flexGrow: 1, maxWidth: layout.maxContentWidth, mx: "auto", width: "100%" }}>
+          {children}
+        </Box>
         <Footer />
       </Box>
     </Box>

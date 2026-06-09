@@ -11,14 +11,15 @@ import { SpaceCard } from "@/components/ui/SpaceCard";
 import { SpaceTable, type SpaceColumn } from "@/components/tables/SpaceTable";
 import { useProfile } from "@/hooks/useProfile";
 import { useActualParameters, useTrainerCatalog } from "@/hooks/useParameters";
-import type { ActualUserParameter } from "@/types/domain";
+import type { ActualUserParameter, TrainerParameter } from "@/types/domain";
 
 export function MyProgressView() {
   const { profile } = useProfile();
   const { data: catalog } = useTrainerCatalog(profile?.trainer_id ?? undefined);
   const { data: values, isLoading } = useActualParameters(profile?.id);
 
-  const paramName = (id: string) => catalog?.find((p) => p.id === id)?.name ?? "Parametr";
+  const paramName = (id: string) =>
+    catalog?.find((p: TrainerParameter) => p.id === id)?.name ?? "Parametr";
 
   // Nejnovější hodnota pro každý parametr (values jsou řazené sestupně dle data)
   const latest = useMemo(() => {

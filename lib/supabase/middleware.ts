@@ -9,7 +9,34 @@ function isPublicPath(pathname: string): boolean {
   return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
 
+function needsSessionCheck(pathname: string): boolean {
+  if (pathname === "/login" || pathname === "/register") return true;
+  return !isPublicPath(pathname);
+}
+
+async function getUserWithTimeout(
+  supabase: ReturnType<typeof createServerClient<Database>>,
+  timeoutMs: number,
+) {
+  try {
+    return await Promise.race([
+      supabase.auth.getUser(),
+      new Promise<{ data: { user: null } }>((resolve) =>
+        setTimeout(() => resolve({ data: { user: null } }), timeoutMs),
+      ),
+    ]);
+  } catch {
+    return { data: { user: null } };
+  }
+}
+
 export async function updateSession(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  if (!needsSessionCheck(pathname)) {
+    return NextResponse.next({ request });
+  }
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient<Database>(
@@ -31,12 +58,10 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  // Pozor: getUser() musí být voláno hned po vytvoření klienta (refresh session).
+  const timeoutMs = pathname === "/login" || pathname === "/register" ? 2000 : 4000;
   const {
     data: { user },
-  } = await supabase.auth.getUser();
-
-  const { pathname } = request.nextUrl;
+  } = await getUserWithTimeout(supabase, timeoutMs);
 
   if (!user && !isPublicPath(pathname)) {
     const url = request.nextUrl.clone();

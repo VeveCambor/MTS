@@ -12,7 +12,17 @@ export function useProfile() {
 
   const query = useQuery({
     queryKey: queryKeys.profile,
-    queryFn: () => getCurrentProfile(supabase),
+    queryFn: async () => {
+      const timeoutMs = 10_000;
+      const result = await Promise.race([
+        getCurrentProfile(supabase),
+        new Promise<null>((_, reject) =>
+          setTimeout(() => reject(new Error("Načtení profilu vypršelo")), timeoutMs),
+        ),
+      ]);
+      return result;
+    },
+    retry: 1,
   });
 
   const role = query.data?.role ?? null;

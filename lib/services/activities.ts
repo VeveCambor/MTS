@@ -8,6 +8,39 @@ export async function getAllActivities(supabase: TypedSupabaseClient): Promise<A
   return data ?? [];
 }
 
+/**
+ * Orientační vzdálenost tréninkové jednotky v km (z přiřazených parametrů).
+ * Bere nejdelší úsek v km (resp. m / 1000). Slouží k auto-předvyplnění km.
+ */
+export async function getTrainingDistanceKm(
+  supabase: TypedSupabaseClient,
+  trainingId: string,
+): Promise<number | null> {
+  const { data: assigns, error } = await supabase
+    .from("activity_training_parameters_assign")
+    .select("value, length_unit_id")
+    .eq("activity_training_id", trainingId);
+  if (error) throw error;
+  if (!assigns || assigns.length === 0) return null;
+
+  const { data: units, error: unitsErr } = await supabase
+    .from("activity_training_param_units")
+    .select("id, name");
+  if (unitsErr) throw unitsErr;
+  const unitName = new Map((units ?? []).map((u) => [u.id, u.name]));
+
+  let maxKm: number | null = null;
+  for (const row of assigns) {
+    if (row.value == null || !row.length_unit_id) continue;
+    const name = unitName.get(row.length_unit_id);
+    let km: number | null = null;
+    if (name === "km") km = Number(row.value);
+    else if (name === "m") km = Number(row.value) / 1000;
+    if (km != null && (maxKm == null || km > maxKm)) maxKm = km;
+  }
+  return maxKm;
+}
+
 export async function getEnabledActivityIds(
   supabase: TypedSupabaseClient,
   userId: string,

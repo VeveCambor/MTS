@@ -8,6 +8,7 @@ import TuneIcon from "@mui/icons-material/Tune";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import TimelineIcon from "@mui/icons-material/Timeline";
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import { isTrainer } from "./roles";
 
 export type NavItem = {
@@ -18,15 +19,17 @@ export type NavItem = {
 
 export type NavSection = {
   label?: string;
+  icon?: ReactNode;
   items: NavItem[];
 };
 
 const trainerNav: NavSection[] = [
   {
-    items: [{ label: "Dashboard", href: "/dashboard", icon: <DashboardIcon /> }],
+    items: [{ label: "Přehled", href: "/dashboard", icon: <DashboardIcon /> }],
   },
   {
     label: "Šablony",
+    icon: <FolderOpenIcon />,
     items: [
       { label: "Skupiny a jednotky", href: "/templates/training-sport", icon: <FitnessCenterIcon /> },
       { label: "Parametry", href: "/templates/parametr-sport", icon: <TuneIcon /> },
@@ -46,7 +49,7 @@ const trainerNav: NavSection[] = [
 const traineeNav: NavSection[] = [
   {
     items: [
-      { label: "Dashboard", href: "/dashboard", icon: <DashboardIcon /> },
+      { label: "Přehled", href: "/dashboard", icon: <DashboardIcon /> },
       { label: "Můj plán", href: "/my-training-plan", icon: <EventNoteIcon /> },
       { label: "Pokrok", href: "/my-progress", icon: <TimelineIcon /> },
       { label: "Kalendář", href: "/calendar", icon: <CalendarMonthIcon /> },

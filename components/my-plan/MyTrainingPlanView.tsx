@@ -15,6 +15,7 @@ import { PlanScheduleView } from "@/components/plans/PlanScheduleView";
 import { useProfile } from "@/hooks/useProfile";
 import { useAssignedPlans, useAssignedPlanComplete } from "@/hooks/useAssignedPlans";
 import { exportElementToPdf } from "@/lib/utils/pdf";
+import type { TrainingPlanUserAssign } from "@/types/domain";
 
 export function MyTrainingPlanView() {
   const { profile } = useProfile();
@@ -69,7 +70,7 @@ export function MyTrainingPlanView() {
 
       <Stack sx={{ mb: 3, maxWidth: 360 }}>
         <TextField select label="Plán" value={planId} onChange={(e) => setSelectedId(e.target.value)}>
-          {plans.map((p) => (
+          {plans.map((p: TrainingPlanUserAssign) => (
             <MenuItem key={p.id} value={p.id}>
               {p.name}
             </MenuItem>
