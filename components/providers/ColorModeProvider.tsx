@@ -25,12 +25,17 @@ export function ColorModeProvider({ children }: { children: React.ReactNode }) {
   const [mode, setMode] = useState<ColorMode>("light");
 
   useEffect(() => {
+    // Načtení preference z localStorage po mountu brání hydration mismatch
+    // (server nezná uložený motiv). Jde o synchronizaci externího stavu do Reactu.
     const stored = window.localStorage.getItem(STORAGE_KEY) as ColorMode | null;
-    if (stored === "light" || stored === "dark") {
-      setMode(stored);
-    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      setMode("dark");
-    }
+    const next =
+      stored === "light" || stored === "dark"
+        ? stored
+        : window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMode(next);
   }, []);
 
   const value = useMemo<ColorModeContextValue>(

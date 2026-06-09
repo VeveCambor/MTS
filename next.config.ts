@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  turbopack: { root: __dirname },
   // react-big-calendar je publikován jako CJS, transpile pro App Router
   transpilePackages: ["react-big-calendar"],
   experimental: {

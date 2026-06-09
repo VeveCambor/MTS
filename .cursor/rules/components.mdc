@@ -4,7 +4,9 @@ globs: app/**/*.tsx,components/**/*.tsx
 alwaysApply: false
 ---
 
-# Komponenty (React + MUI v6)
+# Komponenty (React + MUI v9)
+
+> Grid používá nové `size` API: `<Grid size={{ xs: 12, md: 4 }}>`.
 
 - Funkční komponenty, pojmenovaný export typovaných props (`type FooProps = {...}`).
 - Znovupoužitelná UI primitiva mají prefix `Space` a žijí v `components/ui/` (např. `SpaceTextField`, `SpaceCard`, `SpaceTable`).
