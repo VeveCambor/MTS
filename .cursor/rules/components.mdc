@@ -1,0 +1,30 @@
+---
+description: Konvence React/MUI komponent v MTS
+globs: app/**/*.tsx,components/**/*.tsx
+alwaysApply: false
+---
+
+# Komponenty (React + MUI v6)
+
+- Funkční komponenty, pojmenovaný export typovaných props (`type FooProps = {...}`).
+- Znovupoužitelná UI primitiva mají prefix `Space` a žijí v `components/ui/` (např. `SpaceTextField`, `SpaceCard`, `SpaceTable`).
+- Jedna komponenta = jeden soubor = jedna odpovědnost. Velké stránky rozkládej na podkomponenty.
+- Styling přes MUI `sx` / `styled`. Žádné inline `style={{}}` pro nic netriviálního.
+- Data získávej přes hooky (`hooks/`), ne přímými dotazy do Supabase v komponentě.
+- Stránky (`app/**/page.tsx`) drž tenké: composition + předání props, business logika v hoocích/komponentách.
+- Loading/empty/error stavy řeš explicitně (skeleton/empty state/alert).
+- Bez zbytečných komentářů popisujících samozřejmosti.
+
+```tsx
+// ✅ Příklad UI primitiva
+type SpaceCardProps = { title: string; children: React.ReactNode };
+
+export function SpaceCard({ title, children }: SpaceCardProps) {
+  return (
+    <Card variant="outlined">
+      <CardHeader title={title} />
+      <CardContent>{children}</CardContent>
+    </Card>
+  );
+}
+```

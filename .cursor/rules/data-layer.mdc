@@ -1,0 +1,26 @@
+---
+description: Datová vrstva, Supabase služby a TanStack Query hooky
+globs: lib/services/**/*.ts,hooks/**/*.ts,lib/supabase/**/*.ts
+alwaysApply: false
+---
+
+# Datová vrstva
+
+- **`lib/services/*`** = jediné místo s `supabase.from(...)` dotazy. Funkce jsou čisté async funkce přijímající typovaný supabase client a parametry, vracející typovaná data; chyby vyhazují (`if (error) throw error`).
+- **`hooks/*`** = TanStack Query (`useQuery`/`useMutation`) obalující služby. Stabilní `queryKey`, invalidace po mutacích.
+- Klientské dotazy přes `createBrowserClient` (`lib/supabase/client.ts`), serverové přes `createServerClient` (`lib/supabase/server.ts`).
+- Žádné `select('*')` tam, kde stačí konkrétní sloupce. Joiny přes Supabase embedded resources.
+- Složitou/transakční logiku (kopie šablony plánu) řeš přes Postgres RPC, ne sekvencí klientských insertů.
+- Názvy služeb dle domény: `users.ts`, `activities.ts`, `parameters.ts`, `training-plans.ts`, `training-diary.ts`.
+
+```ts
+// lib/services/users.ts
+export async function getMyTrainees(supabase: SupabaseClient<Database>, trainerId: string) {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("id, nick, first_name, last_name, role")
+    .eq("trainer_id", trainerId);
+  if (error) throw error;
+  return data;
+}
+```

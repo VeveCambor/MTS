@@ -1,0 +1,35 @@
+---
+description: Core architektura a konvence projektu MTS (Next.js + Supabase)
+alwaysApply: true
+---
+
+# MTS – Architektura a konvence
+
+Aplikace pro plánování tréninků mezi trenérem a cvičencem. Next.js 16 (App Router) + Supabase (PostgreSQL, Auth, RLS).
+
+## Adresářová struktura
+
+- `app/` – routy (App Router). Skupiny `(auth)` a `(app)`. Stránky jsou tenké, logiku delegují do komponent/hooků.
+- `components/` – `ui/` (Space* primitiva), `layout/`, `calendar/`, `forms/`, `tables/`, doménové složky.
+- `lib/supabase/` – `client.ts` (browser), `server.ts` (SSR), `middleware.ts`.
+- `lib/services/` – datová vrstva: jediné místo s dotazy do Supabase. Komponenty nikdy nevolají supabase přímo.
+- `hooks/` – React hooky (TanStack Query nad službami z `lib/services`).
+- `types/` – sdílené doménové typy.
+- `lib/constants/` – role, enums, mapování.
+- `supabase/migrations/` – SQL migrace, `supabase/seed.sql` – seed.
+
+## Pravidla kódu
+
+- **Soubor max 700 řádků.** Při překročení rozděl na menší jednotky.
+- **Žádné duplicity.** Sdílenou logiku extrahuj do `lib/`, `hooks/` nebo `components/ui/`.
+- **Server state** přes TanStack Query, **UI state** přes React Context/`useState`. Žádný Redux.
+- **Datový tok:** Komponenta → hook (`hooks/`) → služba (`lib/services/`) → Supabase. Nepřeskakovat vrstvy.
+- **Auth/session** výhradně přes `@supabase/ssr` cookies. Žádný JWT v `localStorage` (kromě klíče `theme`).
+- Klientské komponenty označuj `"use client"` jen když je to nutné (stav, efekty, browser API).
+- Komponenty malé a jednoúčelové; UI primitiva s prefixem `Space`.
+- Env: `NEXT_PUBLIC_*` jen pro veřejné hodnoty. `SUPABASE_SERVICE_ROLE_KEY` nikdy do klienta.
+
+## Role (sjednoceno na BE hodnoty)
+
+`Unverified=0, User=1, SubscriptionUser=2, Trainer=20, SubscriptionTrainer=21, Admin=1000`.
+Helpery v `lib/constants/roles.ts` (`isTrainer`, `isTrainee`).
