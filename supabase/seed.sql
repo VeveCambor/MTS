@@ -15,3 +15,27 @@ from (values
   ('Posilování', 'Silový trénink', 'fitness_center')
 ) as v(name, description, icon)
 where not exists (select 1 from public.activities);
+
+-- Měrné jednotky
+insert into public.activity_training_param_units (name, description)
+select v.name, v.description
+from (values
+  ('km', 'kilometr'),
+  ('m', 'metr'),
+  ('h', 'hodina'),
+  ('min', 'minuta'),
+  ('s', 'sekunda')
+) as v(name, description)
+where not exists (select 1 from public.activity_training_param_units);
+
+-- Typy parametrů
+insert into public.parameter_types (name, description)
+select v.name, v.description
+from (values
+  ('Vzdálenost', 'Délka tréninku'),
+  ('Čas', 'Doba trvání'),
+  ('Tepová frekvence', 'HR zóna nebo tepy'),
+  ('Tempo', 'Rychlost / tempo'),
+  ('Opakování', 'Počet opakování / sérií')
+) as v(name, description)
+where not exists (select 1 from public.parameter_types);
