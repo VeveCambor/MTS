@@ -16,10 +16,10 @@ import { useActivities } from "@/hooks/useActivities";
 type SportPickerProps = {
   title: string;
   subtitle: string;
-  hrefFor: (activityId: string) => string;
+  hrefBase: string;
 };
 
-export function SportPicker({ title, subtitle, hrefFor }: SportPickerProps) {
+export function SportPicker({ title, subtitle, hrefBase }: SportPickerProps) {
   const { data, isLoading, error } = useActivities();
 
   return (
@@ -41,7 +41,7 @@ export function SportPicker({ title, subtitle, hrefFor }: SportPickerProps) {
           {(data ?? []).map((activity) => (
             <Grid key={activity.id} size={{ xs: 12, sm: 6, md: 4 }}>
               <Card>
-                <CardActionArea component={Link} href={`/templates/sport/${activity.id}`}>
+                <CardActionArea component={Link} href={`${hrefBase}/${activity.id}`}>
                   <CardContent>
                     <Stack direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
                       <FitnessCenterIcon color="primary" />

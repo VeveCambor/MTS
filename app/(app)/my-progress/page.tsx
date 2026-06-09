@@ -1,5 +1,8 @@
-import { ComingSoon } from "@/components/ui/ComingSoon";
+import type { Metadata } from "next";
+import { MyProgressView } from "@/components/my-progress/MyProgressView";
+
+export const metadata: Metadata = { title: "Pokrok | MTS" };
 
 export default function MyProgressPage() {
-  return <ComingSoon title="Pokrok" />;
+  return <MyProgressView />;
 }

@@ -1,5 +1,8 @@
-import { ComingSoon } from "@/components/ui/ComingSoon";
+import type { Metadata } from "next";
+import { TraineesView } from "@/components/trainees/TraineesView";
+
+export const metadata: Metadata = { title: "Sportovci | MTS" };
 
 export default function TraineesPage() {
-  return <ComingSoon title="Sportovci" />;
+  return <TraineesView />;
 }

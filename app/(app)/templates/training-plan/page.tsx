@@ -1,5 +1,8 @@
-import { ComingSoon } from "@/components/ui/ComingSoon";
+import type { Metadata } from "next";
+import { TemplatesList } from "@/components/plans/TemplatesList";
+
+export const metadata: Metadata = { title: "Šablony plánů | MTS" };
 
 export default function TrainingPlanPage() {
-  return <ComingSoon title="Tréninkový plán" />;
+  return <TemplatesList />;
 }

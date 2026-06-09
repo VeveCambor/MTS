@@ -30,6 +30,7 @@ const trainerNav: NavSection[] = [
     items: [
       { label: "Skupiny a jednotky", href: "/templates/training-sport", icon: <FitnessCenterIcon /> },
       { label: "Parametry", href: "/templates/parametr-sport", icon: <TuneIcon /> },
+      { label: "Hodnoty cvičenců", href: "/templates/parametr-report", icon: <TimelineIcon /> },
       { label: "Tréninkový plán", href: "/templates/training-plan", icon: <AssignmentIcon /> },
     ],
   },

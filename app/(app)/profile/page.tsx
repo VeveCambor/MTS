@@ -1,5 +1,8 @@
-import { ComingSoon } from "@/components/ui/ComingSoon";
+import type { Metadata } from "next";
+import { ProfileView } from "@/components/profile/ProfileView";
+
+export const metadata: Metadata = { title: "Profil | MTS" };
 
 export default function ProfilePage() {
-  return <ComingSoon title="Profil" />;
+  return <ProfileView />;
 }
