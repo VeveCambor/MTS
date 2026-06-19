@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { RegisterForm } from "@/components/forms/RegisterForm";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = { title: "Registrace | MTS" };
 
 export default function RegisterPage() {

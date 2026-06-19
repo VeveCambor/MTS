@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import { createClient } from "@/lib/supabase/client";
+import { createClient, type TypedSupabaseClient } from "@/lib/supabase/client";
 
 export type RegisterInput = {
   email: string;
@@ -14,15 +14,21 @@ export type RegisterInput = {
 };
 
 export function useAuthActions() {
-  const supabase = useMemo(() => createClient(), []);
+  const clientRef = useRef<TypedSupabaseClient | null>(null);
   const router = useRouter();
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const getClient = useCallback(() => {
+    if (!clientRef.current) clientRef.current = createClient();
+    return clientRef.current;
+  }, []);
+
   async function signIn(email: string, password: string) {
     setLoading(true);
     setError(null);
+    const supabase = getClient();
     const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
     if (authError) {
@@ -38,6 +44,7 @@ export function useAuthActions() {
   async function signUp(input: RegisterInput) {
     setLoading(true);
     setError(null);
+    const supabase = getClient();
     const { error: authError } = await supabase.auth.signUp({
       email: input.email,
       password: input.password,
@@ -56,6 +63,7 @@ export function useAuthActions() {
   }
 
   async function signOut() {
+    const supabase = getClient();
     await supabase.auth.signOut();
     queryClient.clear();
     router.refresh();

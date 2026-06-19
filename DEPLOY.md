@@ -105,6 +105,7 @@ Preview může sdílet stejnou Supabase instanci jako production (pro testován�
 
 | Problém | Řešení |
 |---------|--------|
+| `prerender-error` / chybí Supabase URL a key | Nastav env proměnné na Vercel **před** deployem (Production + Preview). Redeploy po doplnění. |
 | Build fail `npm install` | Ověř, že v repu je `.npmrc` s `legacy-peer-deps=true` |
 | MUI „module has no exports“ | V `next.config.ts` nesmí být `@mui/material` v `optimizePackageImports` |
 | Prázdné stránky / 401 | Chybí env proměnné na Vercel |

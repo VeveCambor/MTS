@@ -1,21 +1,20 @@
 "use client";
 
-import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { createClient } from "@/lib/supabase/client";
+import { useSupabaseClient } from "./useSupabaseClient";
 import { getCurrentProfile } from "@/lib/services/users";
 import { queryKeys } from "@/lib/query-keys";
 import { isTrainee, isTrainer } from "@/lib/constants/roles";
 
 export function useProfile() {
-  const supabase = useMemo(() => createClient(), []);
+  const getSupabase = useSupabaseClient();
 
   const query = useQuery({
     queryKey: queryKeys.profile,
     queryFn: async () => {
       const timeoutMs = 10_000;
       const result = await Promise.race([
-        getCurrentProfile(supabase),
+        getCurrentProfile(getSupabase),
         new Promise<null>((_, reject) =>
           setTimeout(() => reject(new Error("Načtení profilu vypršelo")), timeoutMs),
         ),
