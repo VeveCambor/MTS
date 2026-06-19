@@ -19,7 +19,13 @@ cp .env.example .env.local   # vyplň reálné hodnoty ze Supabase projektu
 npm run dev
 ```
 
-Aplikace běží na http://localhost:3000.
+Aplikace běží na http://localhost:3002 (viz `package.json`).
+
+## Deploy na Vercel
+
+Kompletní návod: **[DEPLOY.md](./DEPLOY.md)**
+
+Stručně: propoj GitHub repo s Vercel, nastav `NEXT_PUBLIC_SUPABASE_URL` a `NEXT_PUBLIC_SUPABASE_ANON_KEY`, spusť migrace v Supabase, nastav Auth Site URL na Vercel doménu.
 
 ## Environment proměnné (`.env.local`)
 
