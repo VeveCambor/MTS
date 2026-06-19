@@ -1,5 +1,7 @@
 export type ColorMode = "light" | "dark";
 
+import { getColors } from "./colors";
+
 export const radius = {
   sm: "4px",
   md: "8px",
@@ -32,82 +34,81 @@ export function contentPaddingLeft(): number {
 
 export function surfaceShadows(mode: ColorMode) {
   const isLight = mode === "light";
+  const c = getColors(mode);
   return {
     sm: isLight
       ? "0 1px 3px rgba(15, 23, 42, 0.06)"
-      : "0 1px 3px rgba(0, 0, 0, 0.25)",
+      : "0 1px 3px rgba(0, 0, 0, 0.30)",
     md: isLight
       ? "0 4px 16px rgba(15, 23, 42, 0.08)"
-      : "0 4px 20px rgba(0, 0, 0, 0.35)",
+      : `0 4px 20px rgba(0, 0, 0, 0.35), 0 0 0 1px ${c.border}`,
     lg: isLight
       ? "0 8px 32px rgba(15, 23, 42, 0.10)"
-      : "0 8px 40px rgba(0, 0, 0, 0.45)",
+      : "0 8px 36px rgba(0, 0, 0, 0.45)",
     shell: isLight
       ? "0 2px 12px rgba(15, 23, 42, 0.06)"
-      : "0 4px 24px rgba(0, 0, 0, 0.4)",
+      : `0 4px 20px rgba(0, 0, 0, 0.35), 0 0 0 1px ${c.border}`,
   };
 }
 
-/** Jemný neon glow kolem aktivních prvků — ne lišta, jen světlo. */
 export function neonGlow(mode: ColorMode, intensity: "soft" | "medium" = "soft") {
   const isLight = mode === "light";
   if (intensity === "medium") {
     return isLight
       ? "0 0 0 1px rgba(91, 33, 182, 0.18), 0 0 24px rgba(91, 33, 182, 0.14)"
-      : "0 0 0 1px rgba(153, 255, 236, 0.22), 0 0 28px rgba(153, 255, 236, 0.14)";
+      : "0 0 0 1px rgba(153, 255, 236, 0.20), 0 0 24px rgba(153, 255, 236, 0.10)";
   }
   return isLight
     ? "0 0 0 1px rgba(91, 33, 182, 0.12), 0 0 14px rgba(91, 33, 182, 0.08)"
-    : "0 0 0 1px rgba(153, 255, 236, 0.16), 0 0 18px rgba(153, 255, 236, 0.10)";
+    : "0 0 0 1px rgba(153, 255, 236, 0.14), 0 0 16px rgba(153, 255, 236, 0.08)";
 }
 
 export function shellTokens(mode: ColorMode) {
-  const isLight = mode === "light";
+  const c = getColors(mode);
   const shadows = surfaceShadows(mode);
+  const isLight = mode === "light";
 
   return {
     shellRadius: radius.xl,
-    navbarBg: isLight ? "rgba(255, 255, 255, 0.72)" : "rgba(30, 41, 59, 0.75)",
-    sidebarBg: isLight ? "rgba(255, 255, 255, 0.65)" : "rgba(30, 41, 59, 0.70)",
-    glassCard: isLight ? "rgba(255, 255, 255, 0.72)" : "rgba(30, 41, 59, 0.75)",
-    glassBorder: isLight ? "rgba(255, 255, 255, 0.85)" : "rgba(255, 255, 255, 0.10)",
-    glassBorderOuter: isLight ? "rgba(15, 23, 42, 0.08)" : "rgba(255, 255, 255, 0.08)",
-    glassActive: isLight ? "rgba(255, 255, 255, 0.85)" : "rgba(255, 255, 255, 0.10)",
-    glassHover: isLight ? "rgba(255, 255, 255, 0.55)" : "rgba(255, 255, 255, 0.06)",
+    navbarBg: c.shellGlass,
+    sidebarBg: c.shellGlass,
+    glassCard: c.surfaceGlass,
+    glassBorder: isLight ? "rgba(255, 255, 255, 0.85)" : c.border,
+    glassBorderOuter: c.border,
+    glassActive: isLight ? "rgba(255, 255, 255, 0.88)" : "rgba(36, 48, 68, 0.75)",
+    glassHover: isLight ? "rgba(255, 255, 255, 0.55)" : "rgba(36, 48, 68, 0.45)",
     accent: isLight ? "#5B21B6" : "#99FFEC",
     accentRgb: isLight ? "91, 33, 182" : "153, 255, 236",
     iconColor: isLight ? "#64748B" : "#94A3B8",
-    iconHover: isLight ? "#5B21B6" : "#F8FAFC",
+    iconHover: isLight ? "#5B21B6" : "#E2FDF9",
     hoverLift: "translateY(-2px)",
     shadows,
-    orb1: isLight ? "rgba(91, 33, 182, 0.12)" : "rgba(153, 255, 236, 0.08)",
-    orb2: isLight ? "rgba(125, 211, 252, 0.15)" : "rgba(91, 33, 182, 0.10)",
-    orb3: isLight ? "rgba(196, 101, 255, 0.10)" : "rgba(125, 211, 252, 0.08)",
-    gridColor: isLight ? "rgba(15, 23, 42, 0.04)" : "rgba(255, 255, 255, 0.04)",
+    orb1: c.orb1,
+    orb2: c.orb2,
+    orb3: c.orb3,
+    gridColor: c.grid,
   };
 }
 
 export function glassPanelSx(mode: ColorMode) {
   const tokens = shellTokens(mode);
   return {
-    backdropFilter: "blur(20px) saturate(180%)",
-    WebkitBackdropFilter: "blur(20px) saturate(180%)",
+    backdropFilter: "blur(20px) saturate(160%)",
+    WebkitBackdropFilter: "blur(20px) saturate(160%)",
     border: `1px solid ${tokens.glassBorderOuter}`,
     boxShadow: tokens.shadows.shell,
   };
 }
 
-/** Futuristický glass panel — vnitřní odlesk bez barevné lišty. */
 export function futuristicGlassSx(mode: ColorMode) {
   const isLight = mode === "light";
   return {
     overflow: "hidden" as const,
     ...glassPanelSx(mode),
-    boxShadow: `${surfaceShadows(mode).shell}, inset 0 1px 0 ${isLight ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.08)"}`,
+    boxShadow: `${surfaceShadows(mode).shell}, inset 0 1px 0 ${isLight ? "rgba(255,255,255,0.75)" : "rgba(148, 163, 184, 0.10)"}`,
   };
 }
 
-/** Kruhové ikonové tlačítko v sidebaru / bottom nav. */
 export function navIconButtonSx(mode: ColorMode, active: boolean) {
   const tokens = shellTokens(mode);
   return {
@@ -132,7 +133,6 @@ export function navIconButtonSx(mode: ColorMode, active: boolean) {
   };
 }
 
-/** Jemný průlet světla přes skleněný panel. */
 export function glassShimmerSx(mode: ColorMode) {
   const isLight = mode === "light";
   return {
@@ -145,7 +145,7 @@ export function glassShimmerSx(mode: ColorMode) {
       height: "100%",
       background: isLight
         ? "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.45) 50%, transparent 60%)"
-        : "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.06) 50%, transparent 60%)",
+        : "linear-gradient(105deg, transparent 40%, rgba(148,163,184,0.08) 50%, transparent 60%)",
       transform: "skewX(-18deg)",
       animation: "glass-shimmer 9s ease-in-out infinite",
       pointerEvents: "none",

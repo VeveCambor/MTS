@@ -1,4 +1,5 @@
 import { createTheme, type ThemeOptions } from "@mui/material/styles";
+import { getColors } from "./colors";
 import { motion, neonGlow, radius, surfaceShadows, type ColorMode } from "./tokens";
 
 export type { ColorMode };
@@ -19,15 +20,12 @@ const sharedOptions: ThemeOptions = {
   },
 };
 
-const LIGHT_BG = "linear-gradient(135deg, #F1F5F9 0%, #E2E8F0 100%)";
-const DARK_BG = "linear-gradient(135deg, #0F172A 0%, #18172e 50%, #1E1B4B 100%)";
-
 const palettes: Record<ColorMode, NonNullable<ThemeOptions["palette"]>> = {
   light: {
     mode: "light",
     primary: { main: "#5B21B6", contrastText: "#FFFFFF" },
     secondary: { main: "#8B5CF6", contrastText: "#FFFFFF" },
-    background: { default: "#F1F5F9", paper: "#FFFFFF" },
+    background: { default: "#EEF2F7", paper: "#FFFFFF" },
     text: { primary: "#1F2937", secondary: "#6B7280" },
     divider: "#E2E8F0",
     success: { main: "#10B981" },
@@ -35,11 +33,11 @@ const palettes: Record<ColorMode, NonNullable<ThemeOptions["palette"]>> = {
   },
   dark: {
     mode: "dark",
-    primary: { main: "#99FFEC", contrastText: "#1B1B3A" },
-    secondary: { main: "#7DD3FC", contrastText: "#1B1B3A" },
-    background: { default: "#0F172A", paper: "#1E293B" },
+    primary: { main: "#99FFEC", contrastText: "#0B1220" },
+    secondary: { main: "#7DD3FC", contrastText: "#0B1220" },
+    background: { default: "#0F172A", paper: "#1A2332" },
     text: { primary: "#F8FAFC", secondary: "#94A3B8" },
-    divider: "#334155",
+    divider: "rgba(148, 163, 184, 0.18)",
     success: { main: "#34D399" },
     error: { main: "#F87171" },
   },
@@ -47,17 +45,14 @@ const palettes: Record<ColorMode, NonNullable<ThemeOptions["palette"]>> = {
 
 function buildComponents(mode: ColorMode): ThemeOptions["components"] {
   const isLight = mode === "light";
-  const pageBg = isLight ? LIGHT_BG : DARK_BG;
-  const cardBg = isLight
-    ? "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.95) 100%)"
-    : "linear-gradient(135deg, rgba(30,41,59,0.98) 0%, rgba(15,23,42,0.95) 100%)";
-  const cardBorder = isLight ? "rgba(226, 232, 240, 0.9)" : "rgba(51, 65, 85, 0.8)";
+  const c = getColors(mode);
+  const pageBg = c.bgGradient;
+  const cardBg = c.cardGradient;
+  const cardBorder = c.border;
   const shadows = surfaceShadows(mode);
   const accent = isLight ? "#8B5CF6" : "#99FFEC";
-  const hoverBg = isLight ? "rgba(139, 92, 246, 0.05)" : "rgba(153, 255, 236, 0.06)";
-  const glassPaper = isLight
-    ? "linear-gradient(135deg, rgba(255,255,255,0.96) 0%, rgba(248,250,252,0.92) 100%)"
-    : "linear-gradient(135deg, rgba(30,41,59,0.96) 0%, rgba(15,23,42,0.92) 100%)";
+  const hoverBg = c.hover;
+  const glassPaper = c.glassGradient;
 
   return {
     MuiCssBaseline: {
@@ -132,7 +127,7 @@ function buildComponents(mode: ColorMode): ThemeOptions["components"] {
           transition: `transform ${motion.normal}, box-shadow ${motion.normal}, border-color ${motion.normal}`,
           "&:hover": {
             boxShadow: shadows.md,
-            borderColor: isLight ? "rgba(15, 23, 42, 0.12)" : "rgba(255, 255, 255, 0.14)",
+            borderColor: c.borderStrong,
           },
         },
       },
@@ -155,7 +150,7 @@ function buildComponents(mode: ColorMode): ThemeOptions["components"] {
           borderRadius: radius.lg,
           background: glassPaper,
           backdropFilter: "blur(20px) saturate(160%)",
-          border: `1px solid ${isLight ? "rgba(15, 23, 42, 0.08)" : "rgba(255, 255, 255, 0.08)"}`,
+          border: `1px solid ${c.borderStrong}`,
           boxShadow: shadows.lg,
         },
       },
@@ -166,7 +161,7 @@ function buildComponents(mode: ColorMode): ThemeOptions["components"] {
           borderRadius: radius.lg,
           background: glassPaper,
           backdropFilter: "blur(20px) saturate(160%)",
-          border: `1px solid ${isLight ? "rgba(15, 23, 42, 0.08)" : "rgba(255, 255, 255, 0.08)"}`,
+          border: `1px solid ${c.borderStrong}`,
           boxShadow: shadows.lg,
           mt: 0.5,
         },
@@ -176,12 +171,20 @@ function buildComponents(mode: ColorMode): ThemeOptions["components"] {
       styleOverrides: {
         root: {
           borderRadius: radius.lg,
-          transition: `box-shadow ${motion.normal}, border-color ${motion.normal}`,
+          bgcolor: c.inputBg,
+          transition: `box-shadow ${motion.normal}, border-color ${motion.normal}, background ${motion.normal}`,
+          "& .MuiOutlinedInput-notchedOutline": {
+            borderColor: c.border,
+          },
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: isLight ? "rgba(15, 23, 42, 0.18)" : c.borderStrong,
+          },
           "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
             borderColor: accent,
             borderWidth: 1.5,
           },
           "&.Mui-focused": {
+            bgcolor: isLight ? c.inputBg : "rgba(11, 18, 32, 0.85)",
             boxShadow: isLight
               ? "0 0 0 3px rgba(139, 92, 246, 0.12)"
               : "0 0 0 3px rgba(153, 255, 236, 0.12)",
@@ -216,7 +219,7 @@ function buildComponents(mode: ColorMode): ThemeOptions["components"] {
           borderColor: cardBorder,
           px: 2.5,
           py: 1.5,
-          bgcolor: isLight ? "rgba(248, 250, 252, 0.9)" : "rgba(15, 23, 42, 0.5)",
+          bgcolor: c.tableHead,
         },
         root: {
           borderColor: cardBorder,

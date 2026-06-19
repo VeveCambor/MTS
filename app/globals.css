@@ -11,10 +11,14 @@ a {
 /* Accent RGB pro CSS proměnné (scan line) */
 html[data-theme="light"] {
   --accent-rgb: 91, 33, 182;
+  --bg-base-rgb: 238, 242, 247;
+  --bg-surface-rgb: 255, 255, 255;
 }
 
 html[data-theme="dark"] {
   --accent-rgb: 153, 255, 236;
+  --bg-base-rgb: 11, 18, 32;
+  --bg-surface-rgb: 26, 35, 50;
 }
 
 /* Animace */
