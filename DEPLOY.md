@@ -36,7 +36,10 @@ Login: `pepa@mts.test` / `pepa1234`
 |------|---------|
 | **Site URL** | `https://<tvuj-projekt>.vercel.app` |
 | **Redirect URLs** | `https://<tvuj-projekt>.vercel.app/**` |
+| | `https://<tvuj-projekt>.vercel.app/auth/callback` |
 | | `http://localhost:3002/**` (lokální vývoj) |
+
+> Pokud je **Site URL** nastavené na `http://localhost:3002`, potvrzovací e-mail po registraci povede na localhost i v produkci. Nastav produkční URL a redeploy.
 
 ---
 
@@ -61,6 +64,7 @@ Build nastavení (mělo by být automaticky z `vercel.json`):
 |------|----------------|
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase → Settings → API → Project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase → Settings → API → anon public |
+| `NEXT_PUBLIC_SITE_URL` | `https://<tvuj-projekt>.vercel.app` (bez lomítka na konci) |
 
 6. Deploy
 

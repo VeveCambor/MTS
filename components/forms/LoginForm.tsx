@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Alert from "@mui/material/Alert";
@@ -14,6 +15,8 @@ import { useAuthActions } from "@/hooks/useAuthActions";
 import { loginSchema, type LoginValues } from "@/lib/validation/auth";
 
 export function LoginForm() {
+  const searchParams = useSearchParams();
+  const registered = searchParams.get("registered") === "1";
   const { signIn, loading, error } = useAuthActions();
   const { control, handleSubmit } = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
@@ -24,6 +27,11 @@ export function LoginForm() {
     <SpaceCard title="Přihlášení" glass sx={{ maxWidth: 600, mx: "auto" }}>
       <form onSubmit={handleSubmit((v) => signIn(v.email, v.password))} noValidate>
         <Stack spacing={2.5}>
+          {registered && (
+            <Alert severity="success">
+              Účet byl vytvořen. Potvrď registraci kliknutím na odkaz v e-mailu, pak se přihlas.
+            </Alert>
+          )}
           {error && <Alert severity="error">{error}</Alert>}
           <SpaceTextField control={control} name="email" label="E-mail" type="email" autoComplete="email" autoFocus />
           <SpaceTextField

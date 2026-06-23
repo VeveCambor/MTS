@@ -4,6 +4,7 @@ import { useCallback, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { createClient, type TypedSupabaseClient } from "@/lib/supabase/client";
+import { getAuthCallbackUrl } from "@/lib/supabase/site-url";
 
 export type RegisterInput = {
   email: string;
@@ -45,11 +46,12 @@ export function useAuthActions() {
     setLoading(true);
     setError(null);
     const supabase = getClient();
-    const { error: authError } = await supabase.auth.signUp({
+    const { data, error: authError } = await supabase.auth.signUp({
       email: input.email,
       password: input.password,
       options: {
         data: { nick: input.nick, first_name: input.firstName, last_name: input.lastName },
+        emailRedirectTo: getAuthCallbackUrl(),
       },
     });
     setLoading(false);
@@ -58,7 +60,11 @@ export function useAuthActions() {
       return false;
     }
     router.refresh();
-    router.push("/dashboard");
+    if (data.session) {
+      router.push("/dashboard");
+    } else {
+      router.push("/login?registered=1");
+    }
     return true;
   }
 
