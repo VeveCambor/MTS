@@ -11,6 +11,7 @@ import Typography from "@mui/material/Typography";
 import MuiLink from "@mui/material/Link";
 import { SpaceCard } from "@/components/ui/SpaceCard";
 import { SpaceTextField } from "@/components/ui/SpaceTextField";
+import { SpacePasswordField } from "@/components/ui/SpacePasswordField";
 import { useAuthActions } from "@/hooks/useAuthActions";
 import { loginSchema, type LoginValues } from "@/lib/validation/auth";
 
@@ -34,11 +35,10 @@ export function LoginForm() {
           )}
           {error && <Alert severity="error">{error}</Alert>}
           <SpaceTextField control={control} name="email" label="E-mail" type="email" autoComplete="email" autoFocus />
-          <SpaceTextField
+          <SpacePasswordField
             control={control}
             name="password"
             label="Heslo"
-            type="password"
             autoComplete="current-password"
           />
           <Button type="submit" variant="contained" size="large" disabled={loading}>
