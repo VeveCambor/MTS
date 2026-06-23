@@ -35,7 +35,6 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
               mb: 1,
             }}
           >
-            MY TRAINING SPACE
           </Typography>
           <Typography
             variant="h1"
@@ -51,7 +50,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             My Training Space
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ letterSpacing: "0.02em" }}>
-            Plánování tréninků mezi trenérem a cvičenci
+            Aplikace pro plánování tréninků mezi trenérem a sportovci.
           </Typography>
         </Box>
         {children}
