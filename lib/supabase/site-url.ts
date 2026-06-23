@@ -16,3 +16,7 @@ export function getSiteUrl(): string {
 export function getAuthCallbackUrl(): string {
   return `${getSiteUrl()}/auth/callback`;
 }
+
+export function getInviteUrl(code: string): string {
+  return `${getSiteUrl()}/invite/${encodeURIComponent(code)}`;
+}

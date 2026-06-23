@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { RegisterForm } from "@/components/forms/RegisterForm";
 
 export const dynamic = "force-dynamic";
@@ -6,5 +7,9 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Registrace | MTS" };
 
 export default function RegisterPage() {
-  return <RegisterForm />;
+  return (
+    <Suspense>
+      <RegisterForm />
+    </Suspense>
+  );
 }

@@ -17,5 +17,26 @@ export type TrainingPlanUserAssignWeek = Tables<"training_plan_user_assign_week_
 export type TrainingPlanUserAssignActivity =
   Tables<"training_plan_user_assign_activity_training_assigns">;
 export type TrainingDiaryNote = Tables<"training_diary_notes">;
+export type TrainerInvite = Tables<"trainer_invites">;
+
+export type TrainerInviteListItem = {
+  id: string;
+  code: string;
+  email: string;
+  status: string;
+  expires_at: string;
+  created_at: string;
+  trainer_id: string;
+  trainer_nick: string;
+  trainer_first_name: string | null;
+  trainer_last_name: string | null;
+};
+
+export type TrainerInvitePreview = {
+  trainer_nick: string;
+  trainer_first_name: string | null;
+  trainer_last_name: string | null;
+  valid: boolean;
+};
 
 export type UserShort = Pick<Profile, "id" | "nick" | "first_name" | "last_name" | "role">;

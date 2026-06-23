@@ -18,6 +18,9 @@ import { loginSchema, type LoginValues } from "@/lib/validation/auth";
 export function LoginForm() {
   const searchParams = useSearchParams();
   const registered = searchParams.get("registered") === "1";
+  const redirectedFrom = searchParams.get("redirectedFrom");
+  const inviteCodeFromRedirect =
+    redirectedFrom?.startsWith("/invite/") ? redirectedFrom.split("/").filter(Boolean).pop() : null;
   const { signIn, loading, error } = useAuthActions();
   const { control, handleSubmit } = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
@@ -26,11 +29,25 @@ export function LoginForm() {
 
   return (
     <SpaceCard title="Přihlášení" glass sx={{ maxWidth: 600, mx: "auto" }}>
-      <form onSubmit={handleSubmit((v) => signIn(v.email, v.password))} noValidate>
+      <form
+        onSubmit={handleSubmit((v) =>
+          signIn(v.email, v.password, redirectedFrom && redirectedFrom.startsWith("/") ? redirectedFrom : undefined),
+        )}
+        noValidate
+      >
         <Stack spacing={2.5}>
           {registered && (
             <Alert severity="success">
               Účet byl vytvořen. Potvrď registraci kliknutím na odkaz v e-mailu, pak se přihlas.
+            </Alert>
+          )}
+          {inviteCodeFromRedirect && (
+            <Alert severity="info">
+              Pro přijetí pozvánky se{" "}
+              <MuiLink component={Link} href={`/register?invite=${inviteCodeFromRedirect}`}>
+                zaregistruj
+              </MuiLink>{" "}
+              se stejným e-mailem, nebo se přihlas, pokud už účet máš.
             </Alert>
           )}
           {error && <Alert severity="error">{error}</Alert>}

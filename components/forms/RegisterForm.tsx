@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Controller, useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Alert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
@@ -19,10 +21,17 @@ import { SpaceCard } from "@/components/ui/SpaceCard";
 import { SpaceTextField } from "@/components/ui/SpaceTextField";
 import { SpacePasswordField } from "@/components/ui/SpacePasswordField";
 import { useAuthActions } from "@/hooks/useAuthActions";
+import { useSupabaseClient } from "@/hooks/useSupabaseClient";
+import { getTrainerInvitePreview, trainerDisplayName } from "@/lib/services/invites";
 import { registerSchema, type RegisterValues } from "@/lib/validation/auth";
 
 export function RegisterForm() {
+  const searchParams = useSearchParams();
+  const inviteFromUrl = searchParams.get("invite") ?? "";
+  const supabase = useSupabaseClient();
   const { signUp, loading, error } = useAuthActions();
+  const [inviteHint, setInviteHint] = useState<string | null>(null);
+
   const { control, handleSubmit } = useForm<RegisterValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -31,10 +40,35 @@ export function RegisterForm() {
       firstName: "",
       lastName: "",
       accountType: "trainee",
+      inviteCode: inviteFromUrl,
       password: "",
       passwordConfirm: "",
     },
   });
+
+  const accountType = useWatch({ control, name: "accountType" });
+  const inviteCode = useWatch({ control, name: "inviteCode" });
+
+  useEffect(() => {
+    const code = (inviteFromUrl || inviteCode)?.trim();
+    if (!code || accountType !== "trainee") {
+      setInviteHint(null);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      const preview = await getTrainerInvitePreview(supabase, code);
+      if (cancelled) return;
+      if (preview?.valid) {
+        setInviteHint(`Pozvánka od trenéra ${trainerDisplayName(preview)}. E-mail musí odpovídat pozvánce.`);
+      } else {
+        setInviteHint(null);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [supabase, inviteFromUrl, inviteCode, accountType]);
 
   return (
     <SpaceCard title="Registrace" glass sx={{ maxWidth: 600, mx: "auto" }}>
@@ -47,12 +81,14 @@ export function RegisterForm() {
             firstName: v.firstName,
             lastName: v.lastName,
             accountType: v.accountType,
+            inviteCode: v.accountType === "trainee" ? v.inviteCode?.trim() : undefined,
           }),
         )}
         noValidate
       >
         <Stack spacing={2.5}>
           {error && <Alert severity="error">{error}</Alert>}
+          {inviteHint && <Alert severity="info">{inviteHint}</Alert>}
 
           <Controller
             name="accountType"
@@ -83,6 +119,15 @@ export function RegisterForm() {
             )}
           />
 
+          {accountType === "trainee" && (
+            <SpaceTextField
+              control={control}
+              name="inviteCode"
+              label="Kód pozvánky (volitelné)"
+              placeholder="Např. A1B2C3D4"
+            />
+          )}
+
           <SpaceTextField control={control} name="nick" label="Přezdívka" autoFocus />
           <Stack direction="row" spacing={2}>
             <SpaceTextField control={control} name="firstName" label="Jméno" />
@@ -106,7 +151,10 @@ export function RegisterForm() {
           </Button>
           <Typography variant="body2" color="text.secondary" sx={{ textAlign: "center" }}>
             Už máš účet?{" "}
-            <MuiLink component={Link} href="/login">
+            <MuiLink
+              component={Link}
+              href={inviteFromUrl ? `/login?redirectedFrom=${encodeURIComponent(`/invite/${inviteFromUrl}`)}` : "/login"}
+            >
               Přihlas se
             </MuiLink>
           </Typography>

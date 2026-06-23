@@ -16,4 +16,5 @@ export const queryKeys = {
   assignedPlans: (userId: string) => ["assigned-plans", userId] as const,
   assignedPlanComplete: (assignId: string) => ["assigned-plan-complete", assignId] as const,
   diaryNotes: (userId: string) => ["diary-notes", userId] as const,
+  trainerInvites: ["trainer-invites"] as const,
 };

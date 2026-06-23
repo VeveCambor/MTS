@@ -16,7 +16,7 @@ Návod pro nasazení **MyTrainingSpace** (Next.js 16 + Supabase).
 
 V **Supabase Dashboard → SQL Editor** spusť v pořadí:
 
-1. `supabase/migrations/0002_activities.sql` … až `0009_trainee_reads_parameters.sql`
+1. `supabase/migrations/0002_activities.sql` … až `0010_trainer_invites.sql`
 2. `supabase/seed.sql`
 
 ### Testovací uživatel (volitelné, lokálně)

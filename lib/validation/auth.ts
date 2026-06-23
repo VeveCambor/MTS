@@ -22,6 +22,7 @@ export const registerSchema = z
     accountType: accountTypeSchema,
     password: z.string().min(8, "Heslo musí mít alespoň 8 znaků"),
     passwordConfirm: z.string(),
+    inviteCode: z.string().optional(),
   })
   .refine((v) => v.password === v.passwordConfirm, {
     message: "Hesla se neshodují",

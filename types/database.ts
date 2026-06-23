@@ -343,6 +343,30 @@ export type Database = {
         Update: Partial<Database["public"]["Tables"]["training_diary_notes"]["Insert"]>;
         Relationships: [];
       };
+      trainer_invites: {
+        Row: {
+          id: string;
+          trainer_id: string;
+          email: string;
+          code: string;
+          status: string;
+          accepted_by: string | null;
+          created_at: string;
+          expires_at: string;
+        };
+        Insert: {
+          id?: string;
+          trainer_id: string;
+          email: string;
+          code: string;
+          status?: string;
+          accepted_by?: string | null;
+          created_at?: string;
+          expires_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["trainer_invites"]["Insert"]>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -353,6 +377,42 @@ export type Database = {
       get_plan_complete: {
         Args: { p_assign_id: string };
         Returns: Json;
+      };
+      get_trainer_invite_preview: {
+        Args: { p_code: string };
+        Returns: {
+          trainer_nick: string;
+          trainer_first_name: string | null;
+          trainer_last_name: string | null;
+          valid: boolean;
+        }[];
+      };
+      list_trainer_invites: {
+        Args: Record<string, never>;
+        Returns: {
+          id: string;
+          code: string;
+          email: string;
+          status: string;
+          expires_at: string;
+          created_at: string;
+          trainer_id: string;
+          trainer_nick: string;
+          trainer_first_name: string | null;
+          trainer_last_name: string | null;
+        }[];
+      };
+      create_trainer_invite: {
+        Args: { p_email: string };
+        Returns: Database["public"]["Tables"]["trainer_invites"]["Row"];
+      };
+      accept_trainer_invite: {
+        Args: { p_code: string };
+        Returns: string;
+      };
+      cancel_trainer_invite: {
+        Args: { p_invite_id: string };
+        Returns: undefined;
       };
     };
     Enums: Record<string, never>;

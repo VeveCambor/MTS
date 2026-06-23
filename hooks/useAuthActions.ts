@@ -6,7 +6,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import { createClient, type TypedSupabaseClient } from "@/lib/supabase/client";
 import { getAuthCallbackUrl } from "@/lib/supabase/site-url";
 import { Role } from "@/lib/constants/roles";
+import { queryKeys } from "@/lib/query-keys";
 import type { AccountType } from "@/lib/validation/auth";
+import { acceptTrainerInvite } from "@/lib/services/invites";
 
 export type RegisterInput = {
   email: string;
@@ -15,6 +17,7 @@ export type RegisterInput = {
   firstName?: string;
   lastName?: string;
   accountType: AccountType;
+  inviteCode?: string;
 };
 
 export function useAuthActions() {
@@ -29,7 +32,7 @@ export function useAuthActions() {
     return clientRef.current;
   }, []);
 
-  async function signIn(email: string, password: string) {
+  async function signIn(email: string, password: string, redirectTo?: string) {
     setLoading(true);
     setError(null);
     const supabase = getClient();
@@ -41,7 +44,7 @@ export function useAuthActions() {
     }
     await queryClient.invalidateQueries();
     router.refresh();
-    router.push("/dashboard");
+    router.push(redirectTo && redirectTo.startsWith("/") ? redirectTo : "/dashboard");
     return true;
   }
 
@@ -69,10 +72,23 @@ export function useAuthActions() {
       return false;
     }
     router.refresh();
+    const inviteCode = input.inviteCode?.trim();
+    if (data.session && inviteCode && input.accountType === "trainee") {
+      try {
+        await acceptTrainerInvite(supabase, inviteCode);
+        await queryClient.invalidateQueries({ queryKey: queryKeys.profile });
+      } catch {
+        // Pozvánku lze přijmout později z odkazu nebo přehledu.
+      }
+    }
     if (data.session) {
-      router.push("/dashboard");
+      router.push(inviteCode ? `/invite/${encodeURIComponent(inviteCode)}` : "/dashboard");
     } else {
-      router.push("/login?registered=1");
+      router.push(
+        inviteCode
+          ? `/login?registered=1&redirectedFrom=${encodeURIComponent(`/invite/${inviteCode}`)}`
+          : "/login?registered=1",
+      );
     }
     return true;
   }

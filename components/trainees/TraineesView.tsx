@@ -1,17 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Skeleton from "@mui/material/Skeleton";
 import Alert from "@mui/material/Alert";
+import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SpaceTable, type SpaceColumn } from "@/components/tables/SpaceTable";
 import { RowActions } from "@/components/ui/RowActions";
 import { TraineePlansPanel } from "./TraineePlansPanel";
 import { EditTraineeDialog, type TraineeFormValues } from "./EditTraineeDialog";
+import { InviteTraineeDialog } from "./InviteTraineeDialog";
+import { SentInvitesList } from "./TrainerInvitesPanel";
 import { useProfile } from "@/hooks/useProfile";
 import { useTrainees } from "@/hooks/useTrainees";
+import { useTrainerInvites } from "@/hooks/useTrainerInvites";
 import { useSupabaseClient } from "@/hooks/useSupabaseClient";
 import { updateProfile } from "@/lib/services/users";
 import { queryKeys } from "@/lib/query-keys";
@@ -26,10 +31,17 @@ export function TraineesView() {
   const { profile } = useProfile();
   const trainerId = profile?.id;
   const { data, isLoading, error } = useTrainees(trainerId);
+  const { data: invites, create, cancel } = useTrainerInvites(Boolean(trainerId));
   const supabase = useSupabaseClient();
   const queryClient = useQueryClient();
 
   const [editing, setEditing] = useState<UserShort | null>(null);
+  const [inviteOpen, setInviteOpen] = useState(false);
+
+  const sentInvites = useMemo(
+    () => (invites ?? []).filter((i) => i.trainer_id === trainerId),
+    [invites, trainerId],
+  );
 
   const editMutation = useMutation({
     mutationFn: ({ id, values }: { id: string; values: TraineeFormValues }) =>
@@ -51,7 +63,15 @@ export function TraineesView() {
 
   return (
     <>
-      <PageHeader title="Sportovci" subtitle="Tvoji cvičenci a jejich tréninkové plány" />
+      <PageHeader
+        title="Sportovci"
+        subtitle="Tvoji cvičenci a jejich tréninkové plány"
+        action={
+          <Button variant="contained" startIcon={<PersonAddIcon />} onClick={() => setInviteOpen(true)}>
+            Pozvat sportovce
+          </Button>
+        }
+      />
 
       {error && <Alert severity="error">Sportovce se nepodařilo načíst.</Alert>}
 
@@ -62,11 +82,17 @@ export function TraineesView() {
           columns={columns}
           rows={data ?? []}
           getRowId={(r) => r.id}
-          emptyText="Zatím nemáš žádné cvičence."
+          emptyText="Zatím nemáš žádné cvičence. Pošli pozvánku na e-mail sportovce."
           renderActions={(row) => <RowActions onEdit={() => setEditing(row)} />}
           renderExpanded={(row) => <TraineePlansPanel traineeId={row.id} />}
         />
       )}
+
+      <SentInvitesList
+        invites={sentInvites}
+        cancelling={cancel.isPending}
+        onCancel={(id) => cancel.mutate(id)}
+      />
 
       <EditTraineeDialog
         open={Boolean(editing)}
@@ -77,6 +103,13 @@ export function TraineesView() {
         loading={editMutation.isPending}
         onSubmit={(values) => editing && editMutation.mutate({ id: editing.id, values })}
         onClose={() => setEditing(null)}
+      />
+
+      <InviteTraineeDialog
+        open={inviteOpen}
+        loading={create.isPending}
+        onClose={() => setInviteOpen(false)}
+        onSubmit={(email) => create.mutateAsync(email)}
       />
     </>
   );
