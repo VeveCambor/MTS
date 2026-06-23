@@ -1,6 +1,6 @@
 import { createTheme, type ThemeOptions } from "@mui/material/styles";
 import { getColors } from "./colors";
-import { motion, neonGlow, radius, surfaceShadows, type ColorMode } from "./tokens";
+import { motion, neonGlow, radius, surfaceShadows, cardGlassSx, type ColorMode } from "./tokens";
 
 export type { ColorMode };
 
@@ -25,9 +25,9 @@ const palettes: Record<ColorMode, NonNullable<ThemeOptions["palette"]>> = {
     mode: "light",
     primary: { main: "#5B21B6", contrastText: "#FFFFFF" },
     secondary: { main: "#8B5CF6", contrastText: "#FFFFFF" },
-    background: { default: "#EEF2F7", paper: "#FFFFFF" },
-    text: { primary: "#1F2937", secondary: "#6B7280" },
-    divider: "#E2E8F0",
+    background: { default: "#FAF9FE", paper: "#FFFFFF" },
+    text: { primary: "#1E1B4B", secondary: "#64748B" },
+    divider: "rgba(139, 92, 246, 0.12)",
     success: { main: "#10B981" },
     error: { main: "#EF4444" },
   },
@@ -46,8 +46,7 @@ const palettes: Record<ColorMode, NonNullable<ThemeOptions["palette"]>> = {
 function buildComponents(mode: ColorMode): ThemeOptions["components"] {
   const isLight = mode === "light";
   const c = getColors(mode);
-  const pageBg = c.bgGradient;
-  const cardBg = c.cardGradient;
+  const pageBg = isLight ? "transparent" : c.bgGradient;
   const cardBorder = c.border;
   const shadows = surfaceShadows(mode);
   const accent = isLight ? "#8B5CF6" : "#99FFEC";
@@ -58,7 +57,7 @@ function buildComponents(mode: ColorMode): ThemeOptions["components"] {
     MuiCssBaseline: {
       styleOverrides: {
         body: {
-          background: pageBg,
+          background: isLight ? c.bgGradient : pageBg,
           backgroundAttachment: "fixed",
           minHeight: "100vh",
         },
@@ -80,11 +79,11 @@ function buildComponents(mode: ColorMode): ThemeOptions["components"] {
             ownerState.color === "primary" &&
             (isLight
               ? {
-                  background: "#5B21B6",
+                  background: "linear-gradient(135deg, #5B21B6 0%, #7C3AED 100%)",
                   color: "#FFFFFF",
                   boxShadow: shadows.sm,
                   "&:hover": {
-                    background: "#6D28D9",
+                    background: "linear-gradient(135deg, #6D28D9 0%, #8B5CF6 100%)",
                     boxShadow: `${shadows.md}, ${neonGlow(mode, "soft")}`,
                   },
                 }
@@ -120,14 +119,14 @@ function buildComponents(mode: ColorMode): ThemeOptions["components"] {
       styleOverrides: {
         root: {
           borderRadius: radius.lg,
-          border: `1px solid ${cardBorder}`,
-          background: cardBg,
-          boxShadow: shadows.sm,
-          backdropFilter: "blur(12px) saturate(140%)",
           transition: `transform ${motion.normal}, box-shadow ${motion.normal}, border-color ${motion.normal}`,
+          ...cardGlassSx(mode),
           "&:hover": {
-            boxShadow: shadows.md,
+            boxShadow: isLight
+              ? `${shadows.md}, inset 0 1px 0 rgba(255,255,255,0.92)`
+              : shadows.md,
             borderColor: c.borderStrong,
+            ...(isLight && { transform: "translateY(-2px)" }),
           },
         },
       },
@@ -177,7 +176,7 @@ function buildComponents(mode: ColorMode): ThemeOptions["components"] {
             borderColor: c.border,
           },
           "&:hover .MuiOutlinedInput-notchedOutline": {
-            borderColor: isLight ? "rgba(15, 23, 42, 0.18)" : c.borderStrong,
+            borderColor: isLight ? c.borderStrong : c.borderStrong,
           },
           "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
             borderColor: accent,
@@ -261,13 +260,14 @@ function buildComponents(mode: ColorMode): ThemeOptions["components"] {
       styleOverrides: {
         root: {
           borderRadius: `${radius.lg} !important`,
-          border: `1px solid ${cardBorder}`,
           marginBottom: 8,
           "&:before": { display: "none" },
-          boxShadow: shadows.sm,
-          overflow: "hidden",
-          transition: `box-shadow ${motion.normal}`,
-          "&.Mui-expanded": { boxShadow: shadows.md },
+          transition: `box-shadow ${motion.normal}, transform ${motion.normal}`,
+          ...cardGlassSx(mode),
+          "&.Mui-expanded": {
+            boxShadow: shadows.md,
+            ...(isLight && { transform: "translateY(-1px)" }),
+          },
         },
       },
     },

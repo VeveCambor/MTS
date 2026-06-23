@@ -15,7 +15,7 @@ import Typography from "@mui/material/Typography";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowRight";
 import { useColorMode } from "@/components/providers/ColorModeProvider";
-import { glassShimmerSx, motion, neonGlow, radius, shellTokens } from "@/styles/tokens";
+import { cardGlassSx, motion, neonGlow, radius } from "@/styles/tokens";
 
 export type SpaceColumn<T> = {
   key: string;
@@ -43,7 +43,6 @@ export function SpaceTable<T>({
   emptyText = "Žádné záznamy.",
 }: SpaceTableProps<T>) {
   const { mode } = useColorMode();
-  const tokens = shellTokens(mode);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const expandable = Boolean(renderExpanded);
   const colSpan = columns.length + (expandable ? 1 : 0) + (renderActions ? 1 : 0);
@@ -52,17 +51,13 @@ export function SpaceTable<T>({
     <Paper
       variant="outlined"
       sx={{
-        position: "relative",
+        ...cardGlassSx(mode),
         borderRadius: radius.lg,
-        overflow: "hidden",
         p: { xs: 1.5, md: 2 },
-        background: tokens.glassCard,
-        backdropFilter: "blur(12px) saturate(140%)",
-        borderColor: tokens.glassBorderOuter,
-        boxShadow: tokens.shadows.sm,
         transition: `box-shadow ${motion.normal}`,
-        ...glassShimmerSx(mode),
-        "&:hover": { boxShadow: `${tokens.shadows.md}, ${neonGlow(mode, "soft")}` },
+        "&:hover": {
+          boxShadow: mode === "light" ? neonGlow(mode, "soft") : neonGlow(mode, "soft"),
+        },
       }}
     >
       <TableContainer sx={{ borderRadius: radius.md, overflow: "hidden" }}>

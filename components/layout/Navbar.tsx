@@ -19,7 +19,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { useAuthActions } from "@/hooks/useAuthActions";
 import { avatarEmoji } from "@/lib/constants/avatars";
 import { roleLabel } from "@/lib/constants/roles";
-import { futuristicGlassSx, glassShimmerSx, layout, motion, shellTokens } from "@/styles/tokens";
+import { futuristicGlassSx, shellShimmerSx, layout, motion, shellTokens } from "@/styles/tokens";
 
 type NavbarProps = {
   onMenuClick: () => void;
@@ -64,7 +64,7 @@ export function Navbar({ onMenuClick }: NavbarProps) {
         borderRadius: tokens.shellRadius,
         bgcolor: tokens.navbarBg,
         ...futuristicGlassSx(mode),
-        ...glassShimmerSx(mode),
+        ...shellShimmerSx(mode),
         display: "flex",
         alignItems: "center",
         px: { xs: 2, md: 3 },

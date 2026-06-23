@@ -11,8 +11,9 @@ a {
 /* Accent RGB pro CSS proměnné (scan line) */
 html[data-theme="light"] {
   --accent-rgb: 91, 33, 182;
-  --bg-base-rgb: 238, 242, 247;
+  --bg-base-rgb: 250, 249, 254;
   --bg-surface-rgb: 255, 255, 255;
+  --glass-highlight: rgba(255, 255, 255, 0.92);
 }
 
 html[data-theme="dark"] {

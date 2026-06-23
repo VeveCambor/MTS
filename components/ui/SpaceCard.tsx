@@ -30,16 +30,21 @@ export function SpaceCard({
 }: SpaceCardProps) {
   const { mode } = useColorMode();
   const tokens = shellTokens(mode);
+  const isLight = mode === "light";
 
   return (
     <Card
       sx={{
-        position: "relative",
-        overflow: "hidden",
         ...(glass && {
-          background: tokens.glassCard,
-          backdropFilter: "blur(16px) saturate(150%)",
-          borderColor: tokens.glassBorderOuter,
+          background: isLight
+            ? "linear-gradient(148deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.62) 100%)"
+            : tokens.glassCard,
+          backdropFilter: isLight ? "blur(24px) saturate(200%)" : "blur(16px) saturate(150%)",
+          WebkitBackdropFilter: isLight ? "blur(24px) saturate(200%)" : "blur(16px) saturate(150%)",
+          borderColor: isLight ? "rgba(255,255,255,0.75)" : tokens.glassBorderOuter,
+          boxShadow: isLight
+            ? `${tokens.shadows.md}, inset 0 1px 0 rgba(255,255,255,0.95), 0 0 0 1px rgba(139, 92, 246, 0.10)`
+            : tokens.shadows.md,
           ...glassShimmerSx(mode),
         }),
         ...(hover && {

@@ -18,7 +18,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import { useColorMode } from "@/components/providers/ColorModeProvider";
 import { getNavSections, type NavItem, type NavSection } from "@/lib/constants/navigation";
 import { useProfile } from "@/hooks/useProfile";
-import { futuristicGlassSx, glassShimmerSx, layout, navIconButtonSx, radius, shellTokens, glassPanelSx } from "@/styles/tokens";
+import { futuristicGlassSx, shellShimmerSx, layout, navIconButtonSx, radius, shellTokens, glassPanelSx } from "@/styles/tokens";
 
 type SidebarProps = {
   onNavigate?: () => void;
@@ -247,7 +247,7 @@ export function Sidebar({ onNavigate, variant = "rail" }: SidebarProps) {
         borderRadius: tokens.shellRadius,
         bgcolor: tokens.sidebarBg,
         ...futuristicGlassSx(mode),
-        ...glassShimmerSx(mode),
+        ...shellShimmerSx(mode),
         zIndex: (t) => t.zIndex.drawer,
         display: { xs: "none", md: "flex" },
         flexDirection: "column",

@@ -3,24 +3,31 @@ import type { ColorMode } from "./tokens";
 /** Sjednocená barevná paleta — pozadí, povrchy, okraje. */
 export const colors = {
   light: {
-    bgGradient: "linear-gradient(160deg, #EEF2F7 0%, #E2E8F0 45%, #DCE4EE 100%)",
+    /** Světlé pozadí s mírným fialovo-modrým nádechem */
+    bgGradient:
+      "linear-gradient(165deg, #FAF9FE 0%, #F3F0FF 26%, #EFF6FF 58%, #F7FAFC 100%)",
     surface: "#FFFFFF",
-    surfaceMuted: "#F8FAFC",
-    surfaceGlass: "rgba(255, 255, 255, 0.78)",
-    shellGlass: "rgba(255, 255, 255, 0.72)",
-    border: "rgba(15, 23, 42, 0.10)",
-    borderStrong: "rgba(15, 23, 42, 0.14)",
-    inputBg: "rgba(255, 255, 255, 0.85)",
+    surfaceMuted: "#FAFAFC",
+    surfaceGlass: "rgba(255, 255, 255, 0.60)",
+    shellGlass: "rgba(255, 255, 255, 0.66)",
+    border: "rgba(255, 255, 255, 0.75)",
+    borderStrong: "rgba(139, 92, 246, 0.18)",
+    inputBg: "rgba(255, 255, 255, 0.75)",
     cardGradient:
-      "linear-gradient(145deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.94) 100%)",
+      "linear-gradient(148deg, rgba(255,255,255,0.80) 0%, rgba(255,255,255,0.55) 52%, rgba(243,240,255,0.38) 100%)",
     glassGradient:
-      "linear-gradient(145deg, rgba(255,255,255,0.96) 0%, rgba(248,250,252,0.92) 100%)",
-    orb1: "rgba(91, 33, 182, 0.10)",
-    orb2: "rgba(125, 211, 252, 0.12)",
-    orb3: "rgba(148, 163, 184, 0.14)",
-    grid: "rgba(15, 23, 42, 0.05)",
-    hover: "rgba(139, 92, 246, 0.06)",
-    tableHead: "rgba(248, 250, 252, 0.92)",
+      "linear-gradient(148deg, rgba(255,255,255,0.84) 0%, rgba(255,255,255,0.60) 100%)",
+    orb1: "rgba(139, 92, 246, 0.17)",
+    orb2: "rgba(56, 189, 248, 0.14)",
+    orb3: "rgba(167, 139, 250, 0.09)",
+    orb4: "rgba(129, 140, 248, 0.11)",
+    grid: "rgba(91, 33, 182, 0.045)",
+    hover: "rgba(139, 92, 246, 0.065)",
+    tableHead: "rgba(255, 255, 255, 0.56)",
+    mesh1: "rgba(167, 139, 250, 0.22)",
+    mesh2: "rgba(56, 189, 248, 0.16)",
+    mesh3: "rgba(167, 139, 250, 0.08)",
+    mesh4: "rgba(129, 140, 248, 0.13)",
   },
   dark: {
     /** Stejná modro-slate rodina jako karty (#1E293B) — bez fialového nádechu */
@@ -40,9 +47,14 @@ export const colors = {
     orb1: "rgba(153, 255, 236, 0.07)",
     orb2: "rgba(56, 132, 182, 0.09)",
     orb3: "rgba(100, 116, 139, 0.11)",
+    orb4: "rgba(100, 116, 139, 0.08)",
     grid: "rgba(148, 163, 184, 0.05)",
     hover: "rgba(153, 255, 236, 0.05)",
     tableHead: "rgba(22, 32, 50, 0.85)",
+    mesh1: "transparent",
+    mesh2: "transparent",
+    mesh3: "transparent",
+    mesh4: "transparent",
   },
 } as const;
 

@@ -37,16 +37,16 @@ export function surfaceShadows(mode: ColorMode) {
   const c = getColors(mode);
   return {
     sm: isLight
-      ? "0 1px 3px rgba(15, 23, 42, 0.06)"
+      ? "0 2px 8px rgba(91, 33, 182, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04)"
       : "0 1px 3px rgba(0, 0, 0, 0.30)",
     md: isLight
-      ? "0 4px 16px rgba(15, 23, 42, 0.08)"
+      ? "0 8px 28px rgba(91, 33, 182, 0.10), 0 4px 12px rgba(15, 23, 42, 0.05)"
       : `0 4px 20px rgba(0, 0, 0, 0.35), 0 0 0 1px ${c.border}`,
     lg: isLight
-      ? "0 8px 32px rgba(15, 23, 42, 0.10)"
+      ? "0 16px 48px rgba(91, 33, 182, 0.14), 0 8px 20px rgba(15, 23, 42, 0.06)"
       : "0 8px 36px rgba(0, 0, 0, 0.45)",
     shell: isLight
-      ? "0 2px 12px rgba(15, 23, 42, 0.06)"
+      ? "0 8px 32px rgba(91, 33, 182, 0.09), 0 2px 8px rgba(15, 23, 42, 0.04), inset 0 1px 0 rgba(255,255,255,0.92)"
       : `0 4px 20px rgba(0, 0, 0, 0.35), 0 0 0 1px ${c.border}`,
   };
 }
@@ -73,8 +73,8 @@ export function shellTokens(mode: ColorMode) {
     navbarBg: c.shellGlass,
     sidebarBg: c.shellGlass,
     glassCard: c.surfaceGlass,
-    glassBorder: isLight ? "rgba(255, 255, 255, 0.85)" : c.border,
-    glassBorderOuter: c.border,
+    glassBorder: isLight ? "rgba(255, 255, 255, 0.95)" : c.border,
+    glassBorderOuter: isLight ? "rgba(255, 255, 255, 0.55)" : c.border,
     glassActive: isLight ? "rgba(255, 255, 255, 0.88)" : "rgba(36, 48, 68, 0.75)",
     glassHover: isLight ? "rgba(255, 255, 255, 0.55)" : "rgba(36, 48, 68, 0.45)",
     accent: isLight ? "#5B21B6" : "#99FFEC",
@@ -92,20 +92,44 @@ export function shellTokens(mode: ColorMode) {
 
 export function glassPanelSx(mode: ColorMode) {
   const tokens = shellTokens(mode);
+  const isLight = mode === "light";
   return {
-    backdropFilter: "blur(20px) saturate(160%)",
-    WebkitBackdropFilter: "blur(20px) saturate(160%)",
-    border: `1px solid ${tokens.glassBorderOuter}`,
+    backdropFilter: isLight ? "blur(24px) saturate(190%)" : "blur(20px) saturate(160%)",
+    WebkitBackdropFilter: isLight ? "blur(24px) saturate(190%)" : "blur(20px) saturate(160%)",
+    border: isLight
+      ? `1px solid ${tokens.glassBorderOuter}`
+      : `1px solid ${tokens.glassBorderOuter}`,
     boxShadow: tokens.shadows.shell,
+  };
+}
+
+export function cardGlassSx(mode: ColorMode) {
+  const c = getColors(mode);
+  const shadows = surfaceShadows(mode);
+  const isLight = mode === "light";
+  return {
+    position: "relative" as const,
+    overflow: "hidden" as const,
+    background: c.cardGradient,
+    backdropFilter: isLight ? "blur(20px) saturate(185%)" : "blur(14px) saturate(150%)",
+    WebkitBackdropFilter: isLight ? "blur(20px) saturate(185%)" : "blur(14px) saturate(150%)",
+    border: `1px solid ${c.border}`,
+    boxShadow: isLight
+      ? `${shadows.sm}, inset 0 1px 0 rgba(255,255,255,0.88)`
+      : shadows.sm,
+    ...(isLight ? glassShimmerSx(mode) : {}),
   };
 }
 
 export function futuristicGlassSx(mode: ColorMode) {
   const isLight = mode === "light";
+  const c = getColors(mode);
   return {
     overflow: "hidden" as const,
     ...glassPanelSx(mode),
-    boxShadow: `${surfaceShadows(mode).shell}, inset 0 1px 0 ${isLight ? "rgba(255,255,255,0.75)" : "rgba(148, 163, 184, 0.10)"}`,
+    boxShadow: isLight
+      ? `${surfaceShadows(mode).shell}, 0 0 0 1px ${c.borderStrong}, inset 0 1px 0 rgba(255,255,255,0.95)`
+      : `${surfaceShadows(mode).shell}, inset 0 1px 0 rgba(148, 163, 184, 0.10)`,
   };
 }
 
@@ -133,7 +157,29 @@ export function navIconButtonSx(mode: ColorMode, active: boolean) {
   };
 }
 
+/** Probliknutí na kartách — ve světlém režimu pomalejší a jemnější. */
 export function glassShimmerSx(mode: ColorMode) {
+  if (mode === "dark") return {};
+
+  return {
+    "&::after": {
+      content: '""',
+      position: "absolute",
+      top: 0,
+      left: "-120%",
+      width: "55%",
+      height: "100%",
+      background:
+        "linear-gradient(105deg, transparent 42%, rgba(255,255,255,0.55) 50%, transparent 58%)",
+      transform: "skewX(-18deg)",
+      animation: "glass-shimmer 14s ease-in-out infinite",
+      pointerEvents: "none",
+    },
+  };
+}
+
+/** Jemné probliknutí shell prvků (navbar, sidebar) — v dark mode pomalejší a slabší. */
+export function shellShimmerSx(mode: ColorMode) {
   const isLight = mode === "light";
   return {
     "&::after": {
@@ -141,13 +187,15 @@ export function glassShimmerSx(mode: ColorMode) {
       position: "absolute",
       top: 0,
       left: "-120%",
-      width: "60%",
+      width: "55%",
       height: "100%",
       background: isLight
-        ? "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.45) 50%, transparent 60%)"
-        : "linear-gradient(105deg, transparent 40%, rgba(148,163,184,0.08) 50%, transparent 60%)",
+        ? "linear-gradient(105deg, transparent 42%, rgba(255,255,255,0.35) 50%, transparent 58%)"
+        : "linear-gradient(105deg, transparent 44%, rgba(148,163,184,0.05) 50%, transparent 56%)",
       transform: "skewX(-18deg)",
-      animation: "glass-shimmer 9s ease-in-out infinite",
+      animation: isLight
+        ? "glass-shimmer 12s ease-in-out infinite"
+        : "glass-shimmer 18s ease-in-out infinite",
       pointerEvents: "none",
     },
   };
